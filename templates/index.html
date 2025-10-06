@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Recognition Attendance</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        #videoFeed {
+            border-radius: 10px;
+            border: 2px solid #3b5783;
+        }
+        .status-present {
+            color: green;
+            font-weight: bold;
+        }
+        .status-absent {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+
+    <h1 class="text-center mb-4">Face Recognised Attendance Monitoring System IIT Dholakpur</h1>
+
+    <div class="row">
+        <!-- Live Camera Feed -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    Live Camera
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('video_feed') }}" id="videoFeed" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    Attendance List
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-hover" id="attendanceTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- rows added by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function updateAttendance() {
+    fetch('/attendance_data')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.querySelector('#attendanceTable tbody');
+            tbody.innerHTML = ""; // clear old rows
+            data.forEach(record => {
+                const row = document.createElement('tr');
+
+                // Set class for Status color
+                const statusClass = record.Status.toLowerCase() === 'present' ? 'status-present' : 'status-absent';
+
+                row.innerHTML = `
+                    <td>${record.Name}</td>
+                    <td>${record.Date}</td>
+                    <td>${record.Time}</td>
+                    <td class="${statusClass}">${record.Status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        });
+}
+
+// Update every 2 seconds
+setInterval(updateAttendance, 2000);
+updateAttendance();
+</script>
+</body>
+</html>
+
 
