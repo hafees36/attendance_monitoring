@@ -59,7 +59,7 @@ def generate_frames():
                     df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
                     df.to_csv(attendance_file, index=False)
 
-                # Draw rectangle and name
+                # Daw rectangle and name
                 top, right, bottom, left = [v*4 for v in face_location]
                 cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
                 cv2.putText(frame, name, (left, top-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,255,0), 2)
